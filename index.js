@@ -2,7 +2,7 @@ require('dotenv').config();
 const qrcode = require('qrcode-terminal');
 const { Client } = require('whatsapp-web.js');
 
-let sessionLocal = JSON.parse(process.env.WW_SESSION | null);
+let sessionLocal = JSON.parse(process.env.WW_SESSION || null);
 console.log("read wwhatsapp-session");
 
 const puppeteerOptions = {
@@ -21,7 +21,8 @@ client.on('qr', qr => {
 
 client.on('authenticated', session => {
     // Save this session object in WW_SESSION manually to reuse it next time
-    console.log(JSON.stringify(session));
+    if (!process.env.WW_SESSION)
+        console.log("WW_SESSION <-"+JSON.stringify(session));
 });
 
 client.on('ready', () => {
