@@ -6,13 +6,12 @@ const { Client } = require('whatsapp-web.js');
 let sessionLocal = JSON.parse(process.env.WW_SESSION || null);
 console.log("read wwhatsapp-session");
 
-const puppeteerOptions = {
-    headless: true,
-    args: ["--no-sandbox"],
-};
-
 const client = new Client({
-    puppeteer: puppeteerOptions,
+    puppeteer: {
+        args: [
+            '--no-sandbox',
+        ],
+    },
     session: sessionLocal
 });
 
