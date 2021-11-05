@@ -40,12 +40,12 @@ client.on('ready', () => {
 
 client.on('message', async msg => {
 	if (msg.body.toLocaleLowerCase() === 'help' || msg.body.toLocaleLowerCase() === 'ayuda')
-		await msg.reply('Manda una imagen o un video a esta conversación. \nSi deseas añadirle un titulo, solo tienes que agregarle un texto junto a la imagen/video al enviarlo. \n\n_Cualquier problema presentado informalo al +525610338516_')
+		await msg.reply('Manda una imagen o un video a esta conversación. \nSi deseas añadirle un titulo, solo tienes que agregarle un texto junto a la imagen/~video~ al enviarlo. \n\n_Cualquier problema presentado informalo al +525610338516_')
 
 	if (msg.hasMedia) {
-		const media = await msg.downloadMedia()
-
-		await msg.reply(media, undefined, { sendMediaAsSticker: true, stickerAuthor: "pic2sticker @m1ndblast", stickerName: media.filename!==undefined?media.filename:msg.body, stickerCategories: ["jeje"]})
+		let media = await msg.downloadMedia()
+		console.log(`message received: ${msg}`)
+		await msg.reply(media, undefined, { sendMediaAsSticker: true, stickerAuthor: "pic2sticker @m1ndblast", stickerName: media.filename!==undefined?media.filename:msg.body, stickerCategories: ["love"]})
 	}
 })
 
