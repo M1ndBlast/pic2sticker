@@ -8,9 +8,8 @@ console.log(sessionLocal? "read wwhatsapp-session!" : "scan next code...");
 
 const client = new Client({
     puppeteer: {
-        args: [
-            '--no-sandbox',
-        ],
+	    executablePath: "/app/.apt/usr/bin/google-chrome",
+        args: [ '--no-sandbox', ],
     },
     session: sessionLocal
 });
