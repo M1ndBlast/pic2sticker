@@ -3,39 +3,27 @@
 const qrcode = require('qrcode-terminal');
 const { Client } = require('whatsapp-web.js');
 
-let sessionLocal = JSON.parse(process.env.WW_SESSION || null);
-console.log(sessionLocal? "read wwhatsapp-session!" : "scan next code...");
-
-const client = new Client({
-    puppeteer: {
-	    executablePath: "/app/.apt/usr/bin/google-chrome",
-        args: [ '--no-sandbox', ],
-    },
-    session: sessionLocal
-});
+const client = new Client({ puppeteer: {headless: true} });
+client.initialize();
 
 client.on('qr', qr => { qrcode.generate(qr, { small: true }) })
 
 client.on('auth_failure', msg => {
-	console.error("Hubo un fallo en la autentificacion", msg)
-	fs.unlink(SESSION_PATH, err => {
-		if (err)
-			console.error("Hubo un problema al restableer la sesión",err)
-		else
-			console.info("Sesión restablecida. Vuelva a ejecutar el programa")
-	})
+	console.error("auth_failure", msg)
 })
 
 // Save session values to the file upon successful auth
-client.on('authenticated', (session) => {
-	// Save this session object in WW_SESSION manually to reuse it next time
-	if (!process.env.WW_SESSION)
-		console.log("WW_SESSION <-"+JSON.stringify(session));
+client.on('authenticated', () => {
+	console.log("authenticated")
 })
 
 client.on('ready', () => {
-	console.log('Client is ready!')
+	console.log('ready')
 })
+
+client.on('disconnected', (reason) => {
+	console.info('disconnected', reason);
+});
 
 client.on('message', async msg => {
 	if (msg.body.toLocaleLowerCase() === 'help' || msg.body.toLocaleLowerCase() === 'ayuda')
@@ -47,7 +35,4 @@ client.on('message', async msg => {
 		await msg.reply(media, undefined, { sendMediaAsSticker: true, stickerAuthor: "pic2sticker @m1ndblast", stickerName: media.filename!==undefined?media.filename:msg.body, stickerCategories: ["love"]})
 	}
 })
-
-client.initialize()
-
 //https://buildpack-registry.s3.amazonaws.com/buildpacks/jontewks/puppeteer.tgz
