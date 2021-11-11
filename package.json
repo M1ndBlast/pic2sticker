@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
+    "multidevice": "npm i github:pedroslopez/whatsapp-web.js#multidevice",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
