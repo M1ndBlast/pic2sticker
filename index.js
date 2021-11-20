@@ -46,7 +46,7 @@ client.on('message', async msg => {
 	if (msg.body.toLocaleLowerCase() === 'help' || msg.body.toLocaleLowerCase() === 'ayuda')
 		await msg.reply('Manda una imagen o un video a esta conversación. \nSi deseas añadirle un titulo, solo tienes que agregarle un texto junto a la imagen/~video~ al enviarlo. \n\n_Cualquier problema presentado informalo al +525610338516_')
 	else if (msg.hasMedia) {
-		let mediaRes;
+		let mediaRes = undefined;
 		let options = { sendMediaAsSticker: true, stickerAuthor: "pic2sticker @m1ndblast"}
 		if (msg.type === MessageTypes.STICKER) {
 			mediaRes = new MessageMedia("image/webp", fs.readFileSync("stickers/sentsticker.webp", {encoding: "base64"}),"don't send stickers")
@@ -63,6 +63,9 @@ client.on('message', async msg => {
 			options.stickerName = mediaRes.filename
 			options.stickerCategories = ["😭"]
 		}
-		await msg.reply(mediaRes, null, options)
+		if (mediaRes)
+			await msg.reply(mediaRes, null, options)
+		else
+			msg.reply("Huno un problema en la conversión de la imagen.\nMandar una captura de pantalla a https://wa.me/5215610338516 \n\n~No es un link externo, unicamente abre el chat dentro WhatsApp~")
 	}
 })
