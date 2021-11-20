@@ -49,21 +49,17 @@ client.on('message', async msg => {
 			if (msg.type === MessageTypes.STICKER) {
 				mediaRes = new MessageMedia("image/webp", fs.readFileSync("stickers/sentsticker.webp", {encoding: "base64"}),"don't send stickers")
 				options.stickerName = mediaRes.filename
-				options.stickerCategories = ["😭"]
+				options.stickerCategories = ["😭", "😭"]
 			}
 			else if (msg.type === MessageTypes.IMAGE) {
-				info(`Downloading Image`)
 				mediaRes = await msg.downloadMedia()
-				info(`Downloaded Image ${mediaRes.mimetype}.`)
 				options.stickerName = mediaRes.filename?mediaRes.filename:msg.body
-				options.stickerCategories = ["🤣"]
+				options.stickerCategories = ["🤣","🤣"]
 			}
 			else {
-				info(`Reading File`)
 				mediaRes = new MessageMedia("image/webp", fs.readFileSync("stickers/sentvideo.webp", {encoding: "base64"}),"unsupportable media")
 				options.stickerName = mediaRes.filename
-				info(`Read File ${mediaRes.filename}`)
-				options.stickerCategories = ["😭"]
+				options.stickerCategories = ["😭","😭"]
 			}
 			if (mediaRes)
 				await msg.reply(mediaRes, null, options)
