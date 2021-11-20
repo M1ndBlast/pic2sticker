@@ -44,7 +44,7 @@ client.on('message', async msg => {
 		if (msg.body.toLocaleLowerCase() === 'help' || msg.body.toLocaleLowerCase() === 'ayuda')
 			await msg.reply('Manda una imagen o un video a esta conversación. \nSi deseas añadirle un titulo, solo tienes que agregarle un texto junto a la imagen/~video~ al enviarlo. \n\n_Cualquier problema presentado informalo al +525610338516_')
 		else if (msg.hasMedia) {
-			let mediaRes = undefined;
+			let mediaRes;
 			let options = { sendMediaAsSticker: true, stickerAuthor: "pic2sticker @m1ndblast"}
 			if (msg.type === MessageTypes.STICKER) {
 				mediaRes = new MessageMedia("image/webp", fs.readFileSync("stickers/sentsticker.webp", {encoding: "base64"}),"don't send stickers")
@@ -54,7 +54,7 @@ client.on('message', async msg => {
 			else if (msg.type === MessageTypes.IMAGE) {
 				info(`Downloading Image`)
 				mediaRes = await msg.downloadMedia()
-				info(`Downloaded Image`)
+				info(`Downloaded Image ${mediaRes.mimetype}`)
 				options.stickerName = mediaRes.filename?mediaRes.filename:msg.body
 				options.stickerCategories = ["🤣"]
 			}
