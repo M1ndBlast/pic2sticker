@@ -54,7 +54,7 @@ client.on('message', async msg => {
 			else if (msg.type === MessageTypes.IMAGE) {
 				info(`Downloading Image`)
 				mediaRes = await msg.downloadMedia()
-				info(`Downloaded Image ${mediaRes.mimetype}`)
+				info(`Downloaded Image ${mediaRes.mimetype}.`)
 				options.stickerName = mediaRes.filename?mediaRes.filename:msg.body
 				options.stickerCategories = ["🤣"]
 			}
