@@ -1,53 +1,68 @@
 // require('dotenv').config();
-
+const fs = require("fs")
 const qrcode = require('qrcode-terminal');
-const { Client } = require('whatsapp-web.js');
+const { Client, MessageTypes, MessageMedia, } = require('whatsapp-web.js');
 
-let sessionLocal = JSON.parse(process.env.WW_SESSION || null);
-console.log(sessionLocal? "read wwhatsapp-session!" : "scan next code...");
+const log = data => console.log("Pic2Stick: "+data)
+const error = data => console.error("Pic2Stick: "+data)
+const info = data => console.info("Pic2Stick: "+data)
+const assert = (condition, data) => console.assert(condition, "Pic2Stick: "+data)
+
+let sessionCfg = JSON.parse(process.env.WW_SESSION || null);
+assert(sessionCfg, "Scan Next QR")
 
 const client = new Client({
     puppeteer: {
 	    executablePath: "/app/.apt/usr/bin/google-chrome",
         args: [ '--no-sandbox', ],
     },
-    session: sessionLocal
+    session: sessionCfg
 });
-
-client.on('qr', qr => { qrcode.generate(qr, { small: true }) })
-
-client.on('auth_failure', msg => {
-	console.error("Hubo un fallo en la autentificacion", msg)
-	fs.unlink(SESSION_PATH, err => {
-		if (err)
-			console.error("Hubo un problema al restableer la sesión",err)
-		else
-			console.info("Sesión restablecida. Vuelva a ejecutar el programa")
-	})
-})
-
-// Save session values to the file upon successful auth
-client.on('authenticated', (session) => {
-	// Save this session object in WW_SESSION manually to reuse it next time
-	if (!process.env.WW_SESSION)
-		console.log("WW_SESSION <-"+JSON.stringify(session));
-})
-
-client.on('ready', () => {
-	console.log('Client is ready!')
-})
-
-client.on('message', async msg => {
-	if (msg.body.toLocaleLowerCase() === 'help' || msg.body.toLocaleLowerCase() === 'ayuda')
-		await msg.reply('Manda una imagen o un video a esta conversación. \nSi deseas añadirle un titulo, solo tienes que agregarle un texto junto a la imagen/~video~ al enviarlo. \n\n_Cualquier problema presentado informalo al +525610338516_')
-
-	if (msg.hasMedia) {
-		let media = await msg.downloadMedia()
-		console.log(`message received: ${msg}`)
-		await msg.reply(media, undefined, { sendMediaAsSticker: true, stickerAuthor: "pic2sticker @m1ndblast", stickerName: media.filename!==undefined?media.filename:msg.body, stickerCategories: ["love"]})
-	}
-})
 
 client.initialize()
 
-//https://buildpack-registry.s3.amazonaws.com/buildpacks/jontewks/puppeteer.tgz
+client.on('qr', qr =>
+	qrcode.generate(qr, {small: true}));
+
+client.on('authenticated', session => {
+	info('AUTHENTICATED');
+	assert(process.env.WW_SESSION, "WW_SESSION="+JSON.stringify(session))
+	sessionCfg=session;
+});
+
+client.on('auth_failure', err =>
+	error('AUTHENTICATION FAILURE'+err) );
+
+client.on('ready', _ =>
+	info('READY') );
+
+client.on('disconnected', reason =>
+	info("LOG OUT "+reason));
+
+client.on('message', async msg => {
+	if (msg.from === "status@broadcast")
+		return
+
+	if (msg.body.toLocaleLowerCase() === 'help' || msg.body.toLocaleLowerCase() === 'ayuda')
+		await msg.reply('Manda una imagen o un video a esta conversación. \nSi deseas añadirle un titulo, solo tienes que agregarle un texto junto a la imagen/~video~ al enviarlo. \n\n_Cualquier problema presentado informalo al +525610338516_')
+	else if (msg.hasMedia) {
+		let mediaRes;
+		let options = { sendMediaAsSticker: true, stickerAuthor: "pic2sticker @m1ndblast"}
+		if (msg.type === MessageTypes.STICKER) {
+			mediaRes = new MessageMedia("image/webp", fs.readFileSync("stickers/sentsticker.webp", {encoding: "base64"}),"tas bien?")
+			options.stickerName = mediaRes.filename
+			options.stickerCategories = ["😭"]
+		}
+		else if (MessageTypes.IMAGE) {
+			mediaRes = await msg.downloadMedia()
+			options.stickerName = mediaRes.filename?mediaRes.filename:msg.body
+			options.stickerCategories = ["🤣"]
+		}
+		else {
+			mediaRes = new MessageMedia("image/webp", fs.readFileSync("stickers/sentvideo.webp", {encoding: "base64"}),"this is fine")
+			options.stickerName = mediaRes.filename
+			options.stickerCategories = ["😭"]
+		}
+		await msg.reply(mediaRes, null, options)
+	}
+})
