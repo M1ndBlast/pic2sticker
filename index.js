@@ -49,7 +49,7 @@ client.on('message', async msg => {
 		let mediaRes;
 		let options = { sendMediaAsSticker: true, stickerAuthor: "pic2sticker @m1ndblast"}
 		if (msg.type === MessageTypes.STICKER) {
-			mediaRes = new MessageMedia("image/webp", fs.readFileSync("stickers/sentsticker.webp", {encoding: "base64"}),"tas bien?")
+			mediaRes = new MessageMedia("image/webp", fs.readFileSync("stickers/sentsticker.webp", {encoding: "base64"}),"don't send stickers")
 			options.stickerName = mediaRes.filename
 			options.stickerCategories = ["😭"]
 		}
@@ -59,7 +59,7 @@ client.on('message', async msg => {
 			options.stickerCategories = ["🤣"]
 		}
 		else {
-			mediaRes = new MessageMedia("image/webp", fs.readFileSync("stickers/sentvideo.webp", {encoding: "base64"}),"this is fine")
+			mediaRes = new MessageMedia("image/webp", fs.readFileSync("stickers/sentvideo.webp", {encoding: "base64"}),"unsupportable media")
 			options.stickerName = mediaRes.filename
 			options.stickerCategories = ["😭"]
 		}
