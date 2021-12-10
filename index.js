@@ -9,11 +9,11 @@ const info = data => console.info("Pic2Stick: "+data)
 const assert = (condition, data) => console.assert(condition, "Pic2Stick: "+data)
 
 let sessionCfg = JSON.parse(process.env.WW_SESSION || null);
-assert(sessionCfg, "Scan Next QR")
+info(sessionCfg?"":"Scan Next QR")
 
 const client = new Client({
     puppeteer: {
-	    executablePath: "/app/.apt/usr/bin/google-chrome",
+	    // executablePath: "/app/.apt/usr/bin/google-chrome",
         args: [ '--no-sandbox', ],
     },
     session: sessionCfg
@@ -30,8 +30,10 @@ client.on('authenticated', session => {
 	sessionCfg=session;
 });
 
-client.on('auth_failure', err =>
-	error('AUTHENTICATION FAILURE'+err) );
+client.on('auth_failure', err => {
+	sessionCfg = null
+	error('AUTHENTICATION FAILURE'+err)
+});
 
 client.on('ready', _ =>
 	info('READY') );

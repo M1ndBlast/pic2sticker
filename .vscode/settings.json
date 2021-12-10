@@ -1,0 +1,8 @@
+{
+	"appService.zipIgnorePattern": [
+		"node_modules{,/**}",
+		".vscode{,/**}"
+	],
+	"appService.defaultWebAppToDeploy": "/subscriptions/eb6667ec-d289-4209-8df2-488747fd6ed6/resourceGroups/Chat_Assistant/providers/Microsoft.Web/sites/pic2sticker",
+	"appService.deploySubpath": "."
+}
