@@ -1,4 +1,4 @@
-// require('dotenv').config();
+require('dotenv').config();
 const fs = require("fs")
 const qrcode = require('qrcode-terminal');
 const { Client, MessageTypes, MessageMedia, } = require('whatsapp-web.js');
