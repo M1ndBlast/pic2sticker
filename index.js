@@ -15,7 +15,7 @@ const { Client, MessageTypes, MessageMedia} = require('whatsapp-web.js');
 if (!(fs.existsSync("./WWebJS") && fs.existsSync("./WWebJS/session-"+APP_NAME)) )
 	logger.warn("Scan Next QR codes")
 
-const client = new Client({ puppeteer: { headless: false }, clientId: APP_NAME });
+const client = new Client({ clientId: APP_NAME });
 
 (async _ => {
 	await client.initialize();
