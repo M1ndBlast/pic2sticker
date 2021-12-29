@@ -10,8 +10,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "log4js": "^6.3.0",
     "qrcode-terminal": "^0.12.0",
-    "whatsapp-web.js": "^1.15.3"
+    "whatsapp-web.js": "github:pedroslopez/whatsapp-web.js#multidevice"
   },
   "devDependencies": {
     "dotenv": "^10.0.0"
